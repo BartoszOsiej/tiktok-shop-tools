@@ -264,13 +264,29 @@
   <section class="hero">
     <div class="eyebrow">Built by Hartwell Labs</div>
     <h1>How much do you <strong>really</strong> make on TikTok Shop?</h1>
-    <p class="subheading">Most sellers lose money because they don't factor in TikTok's 6% commission, 5% referral fee, $0.30 transaction fee, shipping, and ad costs. Paste your numbers — see your true profit instantly. Free forever.</p>
+    <p class="subheading">The calculator is free, forever. Vise Pro adds market intelligence — which 50 products are trending, which creators are buying, and whether your niche is profitable — for a monthly fee. Start here.</p>
   </section>
 
   <!-- Calculator -->
   <section>
     <div class="calculator-card">
       <h2>Your Product <span class="icon">💰</span></h2>
+
+      <!-- Region selector -->
+      <div class="input-group" style="margin-bottom: 20px;">
+        <label>Selling region</label>
+        <select id="region" style="
+          width: 100%; height: 52px; padding: 0 16px;
+          border: 1px solid var(--border); border-radius: 12px;
+          background: var(--bg); color: var(--txt); font-size: 16px;
+          font-family: 'Inter', sans-serif; font-weight: 500;
+          cursor: pointer;
+        ">
+          <option value="usa">🇺🇸 USA — $0.30 fee</option>
+          <option value="eu">🇪🇺 EU — €0.30 fee + VAT</option>
+          <option value="pl">🇵🇱 Poland — zł 1.20 fee + VAT</option>
+        </select>
+      </div>
       <div class="input-group">
         <label>Selling price</label>
         <input type="number" id="price" placeholder="$29.99" value="29.99" min="0" step="0.01">
@@ -288,6 +304,12 @@
         <input type="number" id="adcost" placeholder="$2.50" value="2.50" min="0" step="0.01">
       </div>
 
+      <!-- VAT field (conditional — shows for EU/PL) -->
+      <div class="input-group" id="vat-group" style="display:none;">
+        <label>Estimated VAT rate (%)</label>
+        <input type="number" id="vat" value="20" min="0" max="100" step="1">
+      </div>
+
       <div class="fee-breakdown">
         <div class="fee-row">
           <span class="fee-label">TikTok commission (6%)</span>
@@ -300,6 +322,10 @@
         <div class="fee-row">
           <span class="fee-label">Transaction processing</span>
           <span class="fee-value" id="fee-tx">$0.30</span>
+        </div>
+        <div class="fee-row" id="vat-row" style="display:none;">
+          <span class="fee-label">VAT (<span id="vat-rate">20</span>%)</span>
+          <span class="fee-value" id="fee-vat">$0.00</span>
         </div>
         <div class="fee-row">
           <span class="fee-label">Shipping (your cost)</span>
@@ -430,56 +456,103 @@
 
 <script>
 (function() {
-  const els = {
-    price: document.getElementById('price'),
-    cogs: document.getElementById('cogs'),
-    shipping: document.getElementById('shipping'),
-    adcost: document.getElementById('adcost'),
-    comm: document.getElementById('fee-comm'),
-    ref: document.getElementById('fee-ref'),
-    tx: document.getElementById('fee-tx'),
-    ship: document.getElementById('fee-ship'),
-    ad: document.getElementById('fee-ad'),
-    total: document.getElementById('fee-total'),
-    profit: document.getElementById('profit-amount'),
-    display: document.getElementById('profit-display'),
+  // Region-specific fees
+  const regionData = {
+    usa: { tx: 0.30, currency: '$',  vat: false, vatDefault: 0,  label: 'TX fee' },
+    eu:  { tx: 0.30, currency: '€', vat: true,  vatDefault: 20, label: 'TX fee' },
+    pl:  { tx: 1.20, currency: 'zł', vat: true,  vatDefault: 23, label: 'TX fee' }
   };
 
-  function fmt(v) { return '$' + (v || 0).toFixed(2); }
+  const els = {
+    price:     document.getElementById('price'),
+    cogs:      document.getElementById('cogs'),
+    shipping:  document.getElementById('shipping'),
+    adcost:    document.getElementById('adcost'),
+    region:    document.getElementById('region'),
+    vatGroup:  document.getElementById('vat-group'),
+    vatInput:  document.getElementById('vat'),
+    vatRateEl: document.getElementById('vat-rate'),
+    comm:      document.getElementById('fee-comm'),
+    ref:       document.getElementById('fee-ref'),
+    tx:        document.getElementById('fee-tx'),
+    vatRow:    document.getElementById('vat-row'),
+    vatVal:    document.getElementById('fee-vat'),
+    ship:      document.getElementById('fee-ship'),
+    ad:        document.getElementById('fee-ad'),
+    total:     document.getElementById('fee-total'),
+    profit:    document.getElementById('profit-amount'),
+    display:   document.getElementById('profit-display'),
+  };
+
+  function fmt(v, currency) {
+    if (currency === '€')  return '€' + (v || 0).toFixed(2);
+    if (currency === 'zł') return (v || 0).toFixed(2) + ' zł';
+    return              '$' + (v || 0).toFixed(2);
+  }
+
+  function getRegion() {
+    const r = els.region ? els.region.value : 'usa';
+    return regionData[r] || regionData.usa;
+  }
 
   function calc() {
-    const price = parseFloat(els.price.value) || 0;
-    const cogs = parseFloat(els.cogs.value) || 0;
-    const shipping = parseFloat(els.shipping.value) || 0;
-    const adcost = parseFloat(els.adcost.value) || 0;
+    const region = getRegion();
+    const cur    = region.currency;
 
-    const comm = price * 0.06;
+    const price    = parseFloat(els.price.value)       || 0;
+    const cogs     = parseFloat(els.cogs.value)        || 0;
+    const shipping = parseFloat(els.shipping.value)   || 0;
+    const adcost   = parseFloat(els.adcost.value)     || 0;
+    const vatRate  = region.vat ? (parseFloat(els.vatInput.value) || 0) : 0;
+
+    const comm     = price * 0.06;
     const referral = price * 0.05;
-    const tx = 0.30;
-    const total = cogs + shipping + adcost + comm + referral + tx;
-    const profit = price - total;
+    const tx       = region.tx;
+    const vat      = region.vat ? (price - cogs) * (vatRate / 100) : 0;
+    const total    = cogs + shipping + adcost + comm + referral + tx + vat;
+    const profit   = price - total;
 
-    els.comm.textContent = fmt(comm);
-    els.ref.textContent = fmt(referral);
-    els.tx.textContent = fmt(tx);
-    els.ship.textContent = fmt(shipping);
-    els.ad.textContent = fmt(adcost);
-    els.total.innerHTML = '<strong>$' + total.toFixed(2) + '</strong>';
+    els.comm.textContent  = fmt(comm, cur);
+    els.ref.textContent   = fmt(referral, cur);
+    els.tx.textContent    = fmt(tx, cur);
+    els.ship.textContent  = fmt(shipping, cur);
+    els.ad.textContent    = fmt(adcost, cur);
 
-    // Animation trigger
+    // VAT row
+    if (region.vat) {
+      els.vatRateEl.textContent = vatRate;
+      els.vatVal.textContent    = fmt(vat, cur);
+      els.vatRow.style.display = 'flex';
+    } else {
+      els.vatRow.style.display = 'none';
+    }
+
+    els.total.innerHTML = '<strong>' + fmt(total, cur) + '</strong>';
+
+    // Animation
     els.display.classList.add('animating');
     setTimeout(() => els.display.classList.remove('animating'), 600);
 
-    // Profit bounce + color
     els.profit.classList.remove('ding');
     void els.profit.offsetWidth;
     els.profit.classList.add('ding');
 
-    if (profit > 5) els.profit.style.color = '#059669';
+    if (profit > 5)      els.profit.style.color = '#059669';
     else if (profit > 0) els.profit.style.color = '#d97706';
-    else els.profit.style.color = '#dc2626';
+    else                 els.profit.style.color = '#dc2626';
 
-    els.profit.textContent = fmt(profit);
+    els.profit.textContent = fmt(profit, cur);
+  }
+
+  function updateRegion() {
+    const region = getRegion();
+    if (region.vat) {
+      els.vatGroup.style.display = 'block';
+      els.vatInput.value = region.vatDefault;
+    } else {
+      els.vatGroup.style.display = 'none';
+    }
+    calc();
   }
 
   Object.values(els).forEach(el => {
@@ -488,13 +561,18 @@
       el.addEventListener('change', calc);
     }
   });
+  if (els.region) els.region.addEventListener('change', updateRegion);
 
   window.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
-    if (params.has('price')) els.price.value = params.get('price');
-    if (params.has('cogs')) els.cogs.value = params.get('cogs');
+    if (params.has('price'))    els.price.value    = params.get('price');
+    if (params.has('cogs'))     els.cogs.value     = params.get('cogs');
     if (params.has('shipping')) els.shipping.value = params.get('shipping');
-    if (params.has('ad')) els.adcost.value = params.get('ad');
+    if (params.has('ad'))       els.adcost.value   = params.get('ad');
+    if (params.has('region')) {
+      if (els.region) els.region.value = params.get('region');
+      updateRegion();
+    }
     calc();
   });
 
@@ -503,7 +581,7 @@
 
 function showWaitlist(tier) {
   const pricing = { workplace: '$10', studio: '$15', enterprise: '$25' };
-  const names = { workplace: 'Vise Workplace', studio: 'Vise Studio', enterprise: 'Vise Enterprise' };
+  const names   = { workplace: 'Vise Workplace', studio: 'Vise Studio', enterprise: 'Vise Enterprise' };
   alert('🚀 ' + names[tier] + ' waitlist confirmed!\n\n' +
     'You\'re on the waitlist for ' + pricing[tier] + '/mo.\n' +
     'First 142 creators get 50% off the first month.\n\n' +
