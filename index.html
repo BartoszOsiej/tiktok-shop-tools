@@ -114,18 +114,8 @@
       font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
       color: var(--txt-2); margin-bottom: 10px;
     }
-    .profit-display .value {
-      font-size: 44px; font-weight: 700; color: var(--green);
-      transition: all .3s cubic-bezier(.25,.46,.45,.94);
-    }
-    .profit-display .value.ding {
-      animation: profit-ding 0.6s ease;
-    }
-    @keyframes profit-ding {
-      0% { transform: scale(1); filter: drop-shadow(0 0 0 var(--green)); }
-      25% { transform: scale(1.18); filter: drop-shadow(0 0 16px var(--green)); }
-      100% { transform: scale(1); filter: drop-shadow(0 0 0 var(--green)); }
-    }
+    .profit-display .value { font-size: 44px; font-weight: 700; color: var(--green); transition: all .3s cubic-bezier(.25,.46,.45,.94); }
+    .profit-display .value.tick { animation: profitTick .5s ease-out; }
     .profit-display .sub { font-size: 13px; color: var(--txt-2); margin-top: 6px; }
 
     /* how it works */
@@ -237,6 +227,28 @@
       .calculator-card { padding: 24px; }
       .tier { padding: 24px; }
     }
+
+    /* ===== Animations ===== */
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes profitTick {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.12); filter: drop-shadow(0 0 14px var(--green)); }
+      100% { transform: scale(1); }
+    }
+    .animate-item {
+      opacity: 0; transform: translateY(20px);
+    }
+    .animate-item.in-view {
+      animation: floatUp .7s ease-out forwards;
+    }
+    .profit-display .value.tick { animation: profitTick .5s ease-out; }
+    .tier {
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1),
+                  box-shadow .35s ease, border-color .35s ease;
+    }
   </style>
   <title>Vise — TikTok Shop Profit Calculator</title>
 </head>
@@ -263,14 +275,14 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="eyebrow">Built by Hartwell Labs</div>
-    <h1>How much do you <strong>really</strong> make on TikTok Shop?</h1>
-    <p class="subheading">The calculator is free, forever. Vise Pro adds market intelligence — which 50 products are trending, which creators are buying, and whether your niche is profitable — for a monthly fee. Start here.</p>
+    <div class="eyebrow animate-item">Built by Hartwell Labs</div>
+    <h1 class="animate-item" style="animation-delay: .1s">How much do you <strong>really</strong> make on TikTok Shop?</h1>
+    <p class="subheading animate-item" style="animation-delay: .2s">The calculator is free, forever. Vise Pro adds market intelligence — which 50 products are trending, which creators are buying, and whether your niche is profitable — for a monthly fee. Start here.</p>
   </section>
 
   <!-- Calculator -->
   <section>
-    <div class="calculator-card">
+    <div class="calculator-card animate-item" style="animation-delay: .3s">
       <h2>Your Product <span class="icon">💰</span></h2>
 
       <!-- Region selector -->
@@ -351,7 +363,7 @@
   </section>
 
   <!-- How it works -->
-  <section id="how">
+  <section id="how" class="animate-item" style="animation-delay: .4s">
     <div class="how-it-works">
       <div class="headline">
         <span class="kixmon">This is what <span style="color: var(--txt); font-weight: 700;">Kixmon</span> — charges for:</span>
@@ -365,7 +377,7 @@
   </section>
 
   <!-- Pricing -->
-  <section class="pricing" id="pricing">
+  <section class="pricing animate-item" style="animation-delay: .5s" id="pricing">
     <div class="pricing-head">
       <div class="kicker">Market intelligence</div>
       <h2>Vise Pro — trend data, automated alerts, CSV exports</h2>
@@ -496,6 +508,24 @@
     return regionData[r] || regionData.usa;
   }
 
+  // Number ticker animation using requestAnimationFrame
+  let tickId = null;
+  function animateProfit(target, currency, el, dur) {
+    if (tickId) cancelAnimationFrame(tickId);
+    const d = dur || 700;
+    const start = parseFloat(el.dataset.current || el.textContent.replace(/[^0-9.\-]/g, '') || 0);
+    const startTime = performance.now();
+    function step(now) {
+      const p = Math.min((now - startTime) / d, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = start + (target - start) * eased;
+      el.textContent = fmt(val, currency);
+      el.dataset.current = val;
+      if (p < 1) tickId = requestAnimationFrame(step);
+    }
+    tickId = requestAnimationFrame(step);
+  }
+
   function calc() {
     const region = getRegion();
     const cur    = region.currency;
@@ -534,15 +564,15 @@
     els.display.classList.add('animating');
     setTimeout(() => els.display.classList.remove('animating'), 600);
 
-    els.profit.classList.remove('ding');
+    els.profit.classList.remove('tick');
     void els.profit.offsetWidth;
-    els.profit.classList.add('ding');
+    els.profit.classList.add('tick');
 
     if (profit > 5)      els.profit.style.color = '#059669';
     else if (profit > 0) els.profit.style.color = '#d97706';
     else                 els.profit.style.color = '#dc2626';
 
-    els.profit.textContent = fmt(profit, cur);
+    animateProfit(profit, cur, els.profit);
   }
 
   function updateRegion() {
@@ -588,6 +618,27 @@ function showWaitlist(tier) {
     'First 142 creators get 50% off the first month.\n\n' +
     'We\'ll email you when Vise launches.');
 }
+
+// Entrance animations
+(function() {
+  const items = document.querySelectorAll('.animate-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+  items.forEach(item => {
+    const rect = item.getBoundingClientRect();
+    if (rect.top < window.innerHeight) {
+      item.classList.add('in-view');
+    } else {
+      observer.observe(item);
+    }
+  });
+})();
 </script>
 </body>
 </html>
