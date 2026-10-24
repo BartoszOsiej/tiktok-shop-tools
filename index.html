@@ -249,6 +249,45 @@
       transition: transform .35s cubic-bezier(.34,1.56,.64,1),
                   box-shadow .35s ease, border-color .35s ease;
     }
+
+    /* ===== Waitlist Modal ===== */
+    .modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.85); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; opacity: 0; pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    .modal.active { opacity: 1; pointer-events: all; }
+    .modal-content {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 18px; padding: 32px;
+      max-width: 400px; width: 90%;
+      position: relative;
+      animation: floatUp .5s ease-out;
+    }
+    .modal-close {
+      position: absolute; top: 12px; right: 12px;
+      background: none; border: none; color: var(--txt-2);
+      font-size: 26px; cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { color: var(--txt); }
+    .modal-sub {
+      color: var(--txt-2); font-size: 14px; margin-bottom: 16px;
+    }
+    .modal-inputs input {
+      width: 100%; padding: 12px 16px; margin-bottom: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--txt); font-size: 14px;
+    }
+    .modal-inputs input:focus { outline: none; border-color: var(--accent); }
+    .modal-btn { width: 100%; padding: 14px; font-size: 15px; }
+    #waitlist-success {
+      text-align: center; color: var(--green); font-weight: 600;
+      display: none;
+    }
+    #waitlist-success.error { color: #dc2626; }
   </style>
   <title>Vise — TikTok Shop Profit Calculator</title>
 </head>
@@ -397,9 +436,9 @@
           <li>Basic search filters</li>
           <li>Email support</li>
         </ul>
-        <span class="limit-label">LIMITED TO 500 SPOTS</span>
+        <span class="spots-badge">⚡ 500 spots</span>
         <div class="btn-wrap">
-          <button class="btn" style="background: var(--accent); color: #fff;" onclick="showWaitlist('workplace')">
+          <button class="btn" style="background: var(--accent); color: #fff;" onclick="openWaitlistModal('workplace')">
             Join waitlist — $10/mo
           </button>
         </div>
@@ -418,9 +457,9 @@
           <li>CSV export (500 rows / export)</li>
           <li>Priority email support</li>
         </ul>
-        <span class="spots-badge">⚡ <span class="num">0</span> of 250 on waitlist</span>
+        <span class="spots-badge">⚡ <span class="num">142</span> of 250 on waitlist</span>
         <div class="btn-wrap">
-          <button class="btn" style="background: var(--accent); color: #fff; font-size: 16px;" onclick="showWaitlist('studio')">
+          <button class="btn" style="background: var(--accent); color: #fff; font-size: 16px;" onclick="openWaitlistModal('studio')">
             Join waitlist — $15/mo <span style="font-size: 12px;">(most popular)</span>
           </button>
         </div>
@@ -441,9 +480,9 @@
           <li>Lifetime support guarantee</li>
         </ul>
         <span class="value-badge">🔥 Just +$10 over Studio = everything</span>
-        <div class="limit-label" style="margin-top: 10px;">USAGE CAPPED AT 1M API CALLS</div>
+        <span class="spots-badge" style="color: var(--green);">⚡ 1M API calls cap</span>
         <div class="btn-wrap">
-          <button class="btn" style="background: linear-gradient(135deg, var(--green) 0%, #047857 100%); color: #fff; font-size: 16px;" onclick="showWaitlist('enterprise')">
+          <button class="btn" style="background: linear-gradient(135deg, var(--green) 0%, #047857 100%); color: #fff; font-size: 16px;" onclick="openWaitlistModal('enterprise')">
             Get Enterprise — $25/mo <span style="font-size: 12px;">(best value)</span>
           </button>
         </div>
@@ -451,7 +490,7 @@
     </div>
 
     <div style="text-align: center; margin-top: 32px; font-size: 13px; color: var(--txt-2);">
-      Join <strong>142</strong> creators on the Vise waitlist. Early birds get 50% off the first month.
+      Join <strong class="waitlist-count">142 creators waiting</strong>. Early birds get 50% off the first month.
     </div>
   </section>
 
@@ -466,6 +505,22 @@
     </div>
   </div>
 </footer>
+
+<!-- Waitlist Modal -->
+<div id="waitlist-modal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeWaitlistModal()">×</button>
+    <h3 style="margin-bottom: 8px; font-size: 20px;">Join the Vise Waitlist</h3>
+    <p class="modal-sub">Early birds get 50% off Vise Pro. No spam — unsubscribe anytime.</p>
+    <form id="waitlist-form" class="modal-inputs">
+      <input type="email" id="waitlist-email" placeholder="you@email.com" required>
+      <input type="text" id="waitlist-name" placeholder="Your name (optional)">
+      <input type="hidden" id="waitlist-tier" value="studio">
+      <button type="submit" class="btn modal-btn">Get early access</button>
+    </form>
+    <div id="waitlist-success"></div>
+  </div>
+</div>
 
 <script>
 (function() {
@@ -610,14 +665,87 @@
   calc();
 })();
 
-function showWaitlist(tier) {
-  const pricing = { workplace: '$10', studio: '$15', enterprise: '$25' };
-  const names   = { workplace: 'Vise Workplace', studio: 'Vise Studio', enterprise: 'Vise Enterprise' };
-  alert('🚀 ' + names[tier] + ' waitlist confirmed!\n\n' +
-    'You\'re on the waitlist for ' + pricing[tier] + '/mo.\n' +
-    'First 142 creators get 50% off the first month.\n\n' +
-    'We\'ll email you when Vise launches.');
+const WORKER_URL = 'https://vise-waitlist.metaforicmail.workers.dev/';
+
+function openWaitlistModal(tier) {
+  document.getElementById('waitlist-tier').value = tier;
+  document.getElementById('waitlist-modal').classList.add('active');
+  document.getElementById('waitlist-success').style.display = 'none';
+  document.getElementById('waitlist-form').style.display = 'block';
+  document.getElementById('waitlist-form').reset();
 }
+
+function closeWaitlistModal() {
+  document.getElementById('waitlist-modal').classList.remove('active');
+}
+
+// Form submission to Cloudflare Worker
+document.getElementById('waitlist-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('waitlist-email').value.trim();
+  const tier  = document.getElementById('waitlist-tier').value;
+  const name  = document.getElementById('waitlist-name').value.trim();
+  const succ  = document.getElementById('waitlist-success');
+
+  if (!email || !email.includes('@')) {
+    succ.textContent = '❌ Please enter a valid email';
+    succ.className = 'error';
+    succ.style.display = 'block';
+    document.getElementById('waitlist-form').style.display = 'none';
+    return;
+  }
+
+  succ.style.display = 'none';
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, tier, name })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('waitlist-form').style.display = 'none';
+      succ.textContent = '🎉 You\'re on the list! (' + data.count + ' creators waiting)';
+      succ.className = '';
+      succ.style.display = 'block';
+    } else {
+      document.getElementById('waitlist-form').style.display = 'none';
+      succ.textContent = '❌ ' + (data.error || 'Something went wrong');
+      succ.className = 'error';
+      succ.style.display = 'block';
+    }
+  } catch(err) {
+    document.getElementById('waitlist-form').style.display = 'none';
+    succ.textContent = '❌ Network error — try again';
+    succ.className = 'error';
+    succ.style.display = 'block';
+  }
+});
+
+// Close modal when clicking backdrop
+document.getElementById('waitlist-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeWaitlistModal();
+});
+
+// Fetch real waitlist count on page load
+async function fetchWaitlistCount() {
+  try {
+    const res = await fetch(WORKER_URL + 'count');
+    const data = await res.json();
+    // Update badge numbers
+    document.querySelectorAll('.num').forEach(el => el.textContent = data.count);
+    // Update footer waitlist text
+    document.querySelectorAll('.waitlist-count').forEach(el => {
+      el.textContent = data.count + ' creators waiting';
+    });
+  } catch(e) {
+    console.error('Failed to fetch waitlist count:', e);
+  }
+}
+
+fetchWaitlistCount();
 
 // Entrance animations
 (function() {
