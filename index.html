@@ -43,7 +43,7 @@
     @media (prefers-color-scheme: dark) { header { background: rgba(10, 14, 20, .88); } }
     .header-in { display: flex; justify-content: space-between; align-items: center; height: 64px; }
     .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
-    .logo svg path { stroke: var(--accent); }
+    .logo svg path, .logo svg polyline { stroke: var(--accent); }
     nav.main a { font-size: 14px; color: var(--txt-2); font-weight: 500; }
     nav.main a:hover { color: var(--txt); }
     .header-cta {
@@ -257,8 +257,8 @@
   <div class="container header-in">
     <div class="logo">
       <svg width="22" height="22" viewBox="0 0 46 46">
-        <path d="M23,2 L42,13 L42,33 L23,44 L4,33 L4,13 Z" fill="none" stroke-width="3.4" stroke-linejoin="round"/>
-        <polyline points="13,26 19,26 22,17 26,29 29,24 33,24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M23,2 L42,13 L42,33 L23,44 L4,33 L4,13 Z" fill="none" stroke="#4f46e5" stroke-width="3.4" stroke-linejoin="round"/>
+        <polyline points="13,26 19,26 22,17 26,29 29,24 33,24" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       Hartwell <strong>Labs</strong>
     </div>
