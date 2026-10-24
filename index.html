@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="TikTok Shop Profit Calculator — know your real profit. Market analysis tool. Not affiliated with Kixmon or TikTok." />
+  <meta name="description" content="Vise — TikTok Shop profit calculator & market intelligence. Know your real profit. Built by Hartwell Labs." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,6 @@
       --txt: #f1f5f9; --txt-2: #94a3b8; --txt-3: #64748b;
       --accent: #4f46e5; --accent-hover: #4338ca; --accent-soft: #1e203a;
       --green: #059669; --green-soft: #06342e;
-      --red: #dc2626; --amber: #d97706;
     }
     @media (prefers-color-scheme: light) {
       :root {
@@ -33,13 +32,14 @@
     .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
     .centered { max-width: 760px; margin: 0 auto; }
 
-    /* ===== HEADER ===== */
+    /* header */
     header {
       position: sticky; top: 0; z-index: 50;
+      background: rgba(10, 14, 20, .88);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
     }
-    @media (prefers-color-scheme: light) { header { background: rgba(255, 255, 255, .88); } }
+    @media (prefers-color-scheme: light) { header { background: rgba(255,255,255,.88); } }
     .header-in { display: flex; justify-content: space-between; align-items: center; height: 64px; }
     .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
     .logo svg path, .logo svg polyline { stroke: var(--accent); }
@@ -47,12 +47,13 @@
     nav.main a:hover { color: var(--txt); }
     .header-cta {
       display: inline-flex; align-items: center; height: 36px; padding: 0 16px;
-      border-radius: 8px; background: var(--accent); color: #fff; font-size: 13.5px; font-weight: 600;
+      border-radius: 8px; background: var(--accent); color: #fff;
+      font-size: 13.5px; font-weight: 600;
     }
     .header-cta:hover { background: var(--accent-hover); }
     @media (max-width: 720px) { nav.main { display: none; } }
 
-    /* ===== HERO ===== */
+    /* hero */
     .hero { padding: 100px 0 56px; }
     .hero .eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
@@ -62,21 +63,18 @@
     }
     .hero .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
     h1 { font-size: clamp(28px, 5vw, 42px); font-weight: 700; letter-spacing: -.02em; line-height: 1.1; max-width: 640px; }
-    .subheading { margin-top: 18px; font-size: 17px; color: var(--txt-2); max-width: 640px; line-height: 1.6; }
-    .hero-actions { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .subheading { margin-top: 18px; font-size: 17px; color: var(--txt-2); max-width: 640px; }
 
-    /* ===== CALCULATOR ===== */
+    /* calculator */
     .calculator-card {
-      margin: 40px 0;
-      background: var(--bg);
+      margin: 44px 0;
+      background: var(--bg-subtle);
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 36px;
+      padding: 32px;
       box-shadow: 0 1px 3px rgba(0,0,0,.3);
     }
-    .calculator-card h2 { font-size: 17px; font-weight: 600; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
-    .calculator-card h2 .icon { font-size: 14px; opacity: .6; }
-
+    .calculator-card h2 { font-size: 17px; font-weight: 600; margin-bottom: 22px; display: flex; align-items: center; gap: 8px; }
     .input-group { margin-bottom: 16px; }
     .input-group label {
       display: block; font-size: 13px; font-weight: 500; color: var(--txt-2); margin-bottom: 6px;
@@ -85,45 +83,30 @@
       width: 100%; height: 52px; padding: 0 16px;
       border: 1px solid var(--border); border-radius: 12px;
       background: var(--bg); color: var(--txt); font-size: 16px; font-weight: 500;
-      transition: border-color .2s ease, box-shadow .2s ease;
     }
-    .input-group input:focus {
-      outline: none; border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .input-group input::placeholder { color: var(--txt-3); }
+    .input-group input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    @media (max-width: 640px) { .calculator-card { padding: 24px; } }
 
-    /* ===== FEE BREAKDOWN ===== */
-    .fee-breakdown { margin-top: 28px; }
-    .fee-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 0; border-bottom: 1px solid var(--border);
-    }
-    .fee-row:last-child { border-bottom: 2px solid var(--border); padding-top: 16px; }
+    .fee-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .fee-row:last-child { border-bottom: 2px solid var(--border); }
     .fee-label { font-size: 14px; color: var(--txt-2); }
-    .fee-value { font-size: 14px; font-weight: 500; color: var(--txt); }
+    .fee-value { font-size: 14px; font-weight: 500; }
+    .total-row { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 18px; border-top: 2px solid var(--border); }
+    .total-label { font-size: 14px; font-weight: 600; }
+    .total-value { font-size: 16px; font-weight: 600; }
 
-    /* ===== PROFIT DISPLAY — VIRAL ANIMATION ===== */
     .profit-display {
       text-align: center; margin: 34px 0;
       padding: 32px 20px;
       border-radius: 16px;
-      background: linear-gradient(135deg, #06342e 0%, #0a4f43 100%);
+      background: linear-gradient(135deg, var(--green-soft) 0%, #0a4f43 100%);
       border: 1px solid #0a4f43;
-      position: relative;
-      overflow: hidden;
-    }
-    @media (prefers-color-scheme: light) {
-      .profit-display {
-        background: linear-gradient(135deg, var(--green-soft) 0%, #dcfce7 100%);
-        border-color: #d1fae5;
-      }
+      position: relative; overflow: hidden;
     }
     .profit-display::before {
       content: ""; position: absolute; inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(5,150,105,.25) 0%, transparent 60%);
-      opacity: 0; transition: opacity .6s ease;
-      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, rgba(5,150,105,.2) 0%, transparent 60%);
+      opacity: 0; transition: opacity .6s ease; pointer-events: none;
     }
     .profit-display.animating::before { opacity: 1; }
     .profit-display .label {
@@ -131,61 +114,56 @@
       color: var(--txt-2); margin-bottom: 10px;
     }
     .profit-display .value {
-      font-size: 46px; font-weight: 700; color: var(--green);
-      letter-spacing: -.02em;
-      transition: all .4s cubic-bezier(.25, .46, .45, .94);
+      font-size: 44px; font-weight: 700; color: var(--green);
+      transition: all .3s cubic-bezier(.25,.46,.45,.94);
     }
     .profit-display .value.ding {
-      animation: ding 0.6s ease;
-      filter: drop-shadow(0 0 12px rgba(5,150,105,.4));
+      animation: profit-ding 0.6s ease;
     }
-    @keyframes ding {
-      0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(5,150,105,0)); }
-      30% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(5,150,105,.5)); }
-      100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(5,150,105,0)); }
+    @keyframes profit-ding {
+      0% { transform: scale(1); filter: drop-shadow(0 0 0 var(--green)); }
+      25% { transform: scale(1.18); filter: drop-shadow(0 0 16px var(--green)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 0 var(--green)); }
     }
     .profit-display .sub { font-size: 13px; color: var(--txt-2); margin-top: 6px; }
 
-    /* ===== HOW IT WORKS ===== */
+    /* how it works */
     .how-it-works {
       margin: 52px 0;
       padding: 28px;
+      border: 1px solid var(--border);
       border-radius: 16px;
       background: var(--bg-subtle);
-      border: 1px solid var(--border);
     }
     .how-it-works .headline {
-      font-size: 15px; font-weight: 600; margin-bottom: 8px;
-      display: flex; align-items: center; gap: 8px;
+      font-size: 15px; font-weight: 600; margin-bottom: 10px;
     }
-    .how-it-works .headline .kixmon { color: var(--txt-3); }
-    .how-it-works p { color: var(--txt-2); font-size: 14px; line-height: 1.7; }
+    .how-it-works .kixmon { color: var(--txt-2); }
+    .how-it-works p { color: var(--txt-2); font-size: 15px; line-height: 1.7; }
 
-    /* ===== LEGAL DISCLAMER ===== */
     .legal {
-      margin-top: 16px; padding: 14px 18px;
-      border-radius: 10px;
-      background: var(--accent-soft);
-      font-size: 12px; line-height: 1.7;
-      color: var(--txt-3);
+      margin-top: 18px; padding: 16px 20px;
+      border-radius: 12px; background: var(--accent-soft);
+      font-size: 12px; line-height: 1.7; color: var(--txt-2);
     }
     .legal code { color: var(--accent); }
 
-    /* ===== PRICING TIERS ===== */
+    /* pricing */
     .pricing { margin: 64px 0; }
-    .pricing-head { text-align: center; margin-bottom: 40px; }
+    .pricing-head { text-align: center; margin-bottom: 42px; }
     .pricing-head .kicker {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 13px; font-weight: 600; color: var(--accent);
       background: var(--accent-soft); border-radius: 999px;
       padding: 5px 14px; margin-bottom: 18px;
     }
-    .pricing-head h2 { font-size: 28px; font-weight: 700; max-width: 620px; margin: 0 auto; }
+    .pricing-head .kicker::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    .pricing-head h2 { font-size: clamp(22px, 3vw, 26px); font-weight: 700; letter-spacing: -.01em; }
     .pricing-head p { margin-top: 14px; color: var(--txt-2); font-size: 15px; max-width: 600px; margin-left: auto; margin-right: auto; }
 
     .tier-grid {
       display: grid; grid-template-columns: 1fr; gap: 16px;
-      max-width: 900px; margin: 0 auto;
+      max-width: 1000px; margin: 0 auto;
     }
     @media (min-width: 820px) {
       .tier-grid { grid-template-columns: 1fr 1.1fr 1fr; }
@@ -196,39 +174,55 @@
       padding: 28px; transition: all .25s ease;
       display: flex; flex-direction: column;
     }
-    .tier:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 40px rgba(79,70,229,.12); }
+    .tier:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 40px rgba(79,70,229,.12);
+    }
     .tier .tag {
       display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .1em; padding: 4px 10px; border-radius: 999px;
-      margin-bottom: 14px;
+      letter-spacing: .1em; padding: 4px 10px; border-radius: 999px; margin-bottom: 14px;
     }
-    .tier.basic .tag { background: #f1f5f9; color: var(--txt-3); border: 1px solid var(--border); }
-    .tier.pro .tag { background: var(--accent-soft); color: var(--accent); }
-    .tier.max .tag { background: linear-gradient(135deg, var(--green-soft) 0%, #dcfce7 100%); color: var(--green); border: 1px solid #86efac; }
+    .tier.workplace .tag { background: #f1f5f9; color: var(--txt-3); border: 1px solid var(--border); }
+    .tier.studio .tag { background: var(--accent-soft); color: var(--accent); }
+    .tier.enterprise .tag { background: linear-gradient(135deg, var(--green-soft) 0%, #0a4f43 100%); color: var(--green); border: 1px solid #0a4f43; }
     .tier h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-    .tier .price { font-size: 30px; font-weight: 700; margin: 12px 0 20px; }
+    .tier .price { font-size: 30px; font-weight: 700; margin: 12px 0 18px; }
     .tier .price .small { font-size: 14px; font-weight: 500; color: var(--txt-2); display: block; margin-top: 4px; }
     .tier ul { list-style: none; margin: 18px 0; flex: 1; }
-    .tier ul li { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .tier ul li { padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--txt-2); }
     .tier ul li:last-child { border: none; }
+    .tier .desc { color: var(--txt-2); font-size: 14px; margin: -8px 0 16px; }
+
+    /* clean badges — no ugly text */
     .tier .spots-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 600; margin-top: 16px;
+      font-size: 12px; font-weight: 600; margin-top: 14px;
       color: var(--txt-2);
     }
     .tier .spots-badge .num { color: var(--accent); font-weight: 700; }
     .tier .value-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 600; margin-top: 16px;
+      font-size: 12px; font-weight: 600; margin-top: 14px;
       color: var(--green);
     }
-    .tier.btn-wrap { margin-top: 20px; }
+
+    .tier .limit-label {
+      display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--txt-3);
+      background: var(--border); border-radius: 999px; padding: 3px 10px; margin-top: 10px;
+    }
+    .tier.enterprise .limit-label {
+      background: var(--green); color: var(--bg);
+    }
+
+    .tier .btn-wrap { margin-top: 18px; }
     .tier .btn {
       width: 100%; height: 48px; border-radius: 12px; font-size: 15px; font-weight: 600;
       cursor: pointer; border: none; transition: all .2s ease;
     }
 
-    /* ===== FOOTER ===== */
+    /* footer */
     footer { border-top: 1px solid var(--border); padding: 38px 0 36px; margin-top: 64px; font-size: 13px; color: var(--txt-2); }
     .footer-grid { display: flex; justify-content: space-between; align-items: center; flex-wrap: gap: 16px; }
     @media (max-width: 600px) { .footer-grid { flex-direction: column; text-align: center; } }
@@ -240,11 +234,10 @@
       .hero { padding: 72px 0 36px; }
       h1 { font-size: 28px; }
       .calculator-card { padding: 24px; }
-      .profit-display .value { font-size: 38px; }
       .tier { padding: 24px; }
     }
   </style>
-  <title>TikTok Shop Profit Calculator</title>
+  <title>Vise — TikTok Shop Profit Calculator</title>
 </head>
 <body>
 
@@ -255,11 +248,11 @@
         <path d="M23,2 L42,13 L42,33 L23,44 L4,33 L4,13 Z" fill="none" stroke="#4f46e5" stroke-width="3.4" stroke-linejoin="round"/>
         <polyline points="13,26 19,26 22,17 26,29 29,24 33,24" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      Hartwell <strong>Labs</strong>
+      <span>Vise</span>
     </div>
     <nav class="main">
-      <a href="#pricing">Pricing</a>
       <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
     </nav>
     <a class="header-cta" href="https://github.com/BartoszOsiej/tiktok-shop-tools">GitHub ↗</a>
   </div>
@@ -271,7 +264,7 @@
   <section class="hero">
     <div class="eyebrow">Built by Hartwell Labs</div>
     <h1>How much do you <strong>really</strong> make on TikTok Shop?</h1>
-    <p class="subheading">Most sellers lose money because they don't calculate TikTok's 6% commission, 5% referral fee, $0.30 transaction fee, shipping, and ad costs. Paste your numbers — see your true profit instantly. Free forever.</p>
+    <p class="subheading">Most sellers lose money because they don't factor in TikTok's 6% commission, 5% referral fee, $0.30 transaction fee, shipping, and ad costs. Paste your numbers — see your true profit instantly. Free forever.</p>
   </section>
 
   <!-- Calculator -->
@@ -305,7 +298,7 @@
           <span class="fee-value" id="fee-ref">$1.50</span>
         </div>
         <div class="fee-row">
-          <span class="fee-label">Transaction processing fee</span>
+          <span class="fee-label">Transaction processing</span>
           <span class="fee-value" id="fee-tx">$0.30</span>
         </div>
         <div class="fee-row">
@@ -322,7 +315,6 @@
         </div>
       </div>
 
-      <!-- VIRAL ANIMATED PROFIT -->
       <div class="profit-display" id="profit-display">
         <div class="label">YOUR TRUE PROFIT</div>
         <div class="value" id="profit-amount">$20.90</div>
@@ -335,12 +327,13 @@
   <section id="how">
     <div class="how-it-works">
       <div class="headline">
-        <span class="kixmon">This is what <span style="color: var(--txt); font-weight: 700;">Kixmon</span> ($49.99/mo)</span> <span style="color: var(--txt-2);">charges for — built by Hartwell Labs for free.</span>
+        <span class="kixmon">This is what <span style="color: var(--txt); font-weight: 700;">Kixmon</span> — charges for:</span>
+        <span style="color: var(--accent); font-weight: 600;">Vise does it free.</span>
       </div>
       <p>TikTok's 6% commission and 5% referral fee eat into your margin. Most sellers don't even know these exist until it's too late. This calculator does the math for free — no signup, no tracking, works in your browser.</p>
     </div>
     <div class="legal">
-      <code>DISCLAIMER:</code> This is a market analysis and educational tool. It is <strong>not affiliated with</strong> Kixmon, TikTok, or TikTok Shop. All fee calculations are for reconnaissance and educational purposes only. For actual fee structures, consult TikTok Seller Center directly.
+      <code>DISCLAIMER:</code> Vise is a market analysis and educational tool. It is <strong>not affiliated with</strong> Kixmon, TikTok, or TikTok Shop. All fee calculations are for reconnaissance purposes. For actual fee structures, consult TikTok Seller Center.
     </div>
   </section>
 
@@ -348,77 +341,78 @@
   <section class="pricing" id="pricing">
     <div class="pricing-head">
       <div class="kicker">Market intelligence</div>
-      <h2>TikTok Shop Pro — trend data, automated alerts, CSV exports</h2>
-      <p>Get real-time product research + profit tracking. The free calculator tells you your profit on one product. Pro tells you which 50 products are making money right now.</p>
+      <h2>Vise Pro — trend data, automated alerts, CSV exports</h2>
+      <p>The free calculator shows your profit on one product. Vise Pro shows you which products are making money right now — automated.</p>
     </div>
 
     <div class="tier-grid">
-      <!-- BASIC -->
-      <div class="tier basic">
-        <span class="tag">Basic</span>
-        <h3>Starter</h3>
+      <!-- VISE WORKPLACE -->
+      <div class="tier workplace">
+        <span class="tag">Workplace</span>
+        <h3>Vise Workplace</h3>
         <div class="price">$10<span class="small">per month</span></div>
-        <p style="color: var(--txt-2); font-size: 14px; margin: -8px 0 16px;">Limited reconnaissance.</p>
+        <p class="desc">Starting point. Good for testing if the numbers work.</p>
         <ul>
           <li>50 trending products / month</li>
           <li>Daily email digest</li>
           <li>Basic search filters</li>
           <li>Email support</li>
         </ul>
-        <span class="spots-badge">⚡ <span class="num">100</span> early-bird spots</span>
+        <span class="limit-label">LIMITED TO 500 SPOTS</span>
         <div class="btn-wrap">
-          <button class="btn" style="background: var(--accent); color: #fff;" onclick="showWaitlist('basic')">
+          <button class="btn" style="background: var(--accent); color: #fff;" onclick="showWaitlist('workplace')">
             Join waitlist — $10/mo
           </button>
         </div>
       </div>
 
-      <!-- PRO (CENTER - THE SWEET SPOT COMPROMISE) -->
-      <div class="tier pro" style="border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);">
+      <!-- VISE STUDIO (CENTER) -->
+      <div class="tier studio" style="border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);">
         <span class="tag">Best Value</span>
-        <h3>Pro</h3>
+        <h3>Vise Studio</h3>
         <div class="price">$15<span class="small">per month</span></div>
-        <p style="color: var(--txt-2); font-size: 14px; margin: -8px 0 16px;">The compromise tier.</p>
+        <p class="desc">The compromise tier. Real-time data + exports.</p>
         <ul>
           <li>200 trending products / month</li>
           <li>Real-time email alerts</li>
           <li>All search filters + saved searches</li>
-          <li>CSV export (100 rows / export)</li>
+          <li>CSV export (500 rows / export)</li>
           <li>Priority email support</li>
         </ul>
-        <span class="spots-badge">⚡ <span class="num">250</span> beta spots</span>
+        <span class="spots-badge">⚡ <span class="num">0</span> of 250 on waitlist</span>
         <div class="btn-wrap">
-          <button class="btn" style="background: var(--accent); color: #fff; font-size: 16px;" onclick="showWaitlist('pro')">
+          <button class="btn" style="background: var(--accent); color: #fff; font-size: 16px;" onclick="showWaitlist('studio')">
             Join waitlist — $15/mo <span style="font-size: 12px;">(most popular)</span>
           </button>
         </div>
       </div>
 
-      <!-- MAX -->
-      <div class="tier max">
-        <span class="tag">Max</span>
-        <h3>Everything</h3>
+      <!-- VISE ENTERPRISE -->
+      <div class="tier enterprise">
+        <span class="tag">Enterprise</span>
+        <h3>Vise Enterprise</h3>
         <div class="price">$25<span class="small">per month</span></div>
-        <p style="color: var(--txt-2); font-size: 14px; margin: -8px 0 16px;">The market. <span style="color: var(--green); font-weight: 700;">Worth every penny.</span></p>
+        <p class="desc">Everything included. Large limits. <span style="color: var(--green); font-weight: 700;">Worth every penny.</span></p>
         <ul>
-          <li><strong>Unlimited</strong> trending products</li>
-          <li>Real-time alerts + webhook API</li>
-          <li>All filters + custom alerts</li>
-          <li><strong>Unlimited</strong> CSV exports</li>
-          <li><strong>API access</strong> (integrate with your stack)</li>
+          <li><strong>10,000 products</strong> tracked / month</li>
+          <li><strong>1M API calls</strong> / month</li>
+          <li>All search filters + webhooks</li>
+          <li><strong>500 CSV exports</strong> (1K rows each)</li>
+          <li><strong>API access</strong> — integrate with your stack</li>
           <li>Lifetime support guarantee</li>
         </ul>
-        <span class="value-badge">🔥 Just +$10 for everything</span>
+        <span class="value-badge">🔥 Just +$10 over Studio = everything</span>
+        <div class="limit-label" style="margin-top: 10px;">USAGE CAPPED AT 1M API CALLS</div>
         <div class="btn-wrap">
-          <button class="btn" style="background: linear-gradient(135deg, var(--green) 0%, #047857 100%); color: #fff; font-size: 16px;" onclick="showWaitlist('max')">
-            Get Max — $25/mo <span style="font-size: 12px;">(best value)</span>
+          <button class="btn" style="background: linear-gradient(135deg, var(--green) 0%, #047857 100%); color: #fff; font-size: 16px;" onclick="showWaitlist('enterprise')">
+            Get Enterprise — $25/mo <span style="font-size: 12px;">(best value)</span>
           </button>
         </div>
       </div>
     </div>
 
-    <div style="text-align: center; margin-top: 32px; font-size: 13px; color: var(--txt-3);">
-      7-day free trial on all plans. Cancel anytime. <strong>142</strong> creators already on the waitlist.
+    <div style="text-align: center; margin-top: 32px; font-size: 13px; color: var(--txt-2);">
+      7-day free trial on all Vise plans. Cancel anytime. <strong>142</strong> creators on the waitlist.
     </div>
   </section>
 
@@ -426,7 +420,7 @@
 
 <footer>
   <div class="container footer-grid">
-    <span>© 2026 Hartwell Labs. No cookies. No tracking. Calculations in your browser.</span>
+    <span>© 2026 Hartwell Labs. Vise — market analysis tools. No cookies. No tracking. Calculations in your browser.</span>
     <div class="footer-links">
       <a href="https://github.com/BartoszOsiej/tiktok-shop-tools">GitHub</a>
       <a href="mailto:bartosz@hartwell-labs.pl">Contact</a>
@@ -470,20 +464,17 @@
     els.tx.textContent = fmt(tx);
     els.ship.textContent = fmt(shipping);
     els.ad.textContent = fmt(adcost);
-
-    const totalEl = els.total;
-    totalEl.innerHTML = '<strong>$' + total.toFixed(2) + '</strong>';
+    els.total.innerHTML = '<strong>$' + total.toFixed(2) + '</strong>';
 
     // Animation trigger
     els.display.classList.add('animating');
     setTimeout(() => els.display.classList.remove('animating'), 600);
 
-    // Profit animation
+    // Profit bounce + color
     els.profit.classList.remove('ding');
-    void els.profit.offsetWidth; // trigger reflow
+    void els.profit.offsetWidth;
     els.profit.classList.add('ding');
 
-    // Color code profit
     if (profit > 5) els.profit.style.color = '#059669';
     else if (profit > 0) els.profit.style.color = '#d97706';
     else els.profit.style.color = '#dc2626';
@@ -491,7 +482,6 @@
     els.profit.textContent = fmt(profit);
   }
 
-  // Attach listeners
   Object.values(els).forEach(el => {
     if (el && el.addEventListener) {
       el.addEventListener('input', calc);
@@ -499,7 +489,6 @@
     }
   });
 
-  // Parse URL params on load
   window.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
     if (params.has('price')) els.price.value = params.get('price');
@@ -513,27 +502,12 @@
 })();
 
 function showWaitlist(tier) {
-  const price = document.getElementById('price').value;
-  const cogs = document.getElementById('cogs').value;
-  const shipping = document.getElementById('shipping').value;
-  const adcost = document.getElementById('adcost').value;
-
-  const pricing = { basic: '$10', pro: '$15', max: '$25' };
-  const tierNames = { basic: 'Basic', pro: 'Pro', max: 'Max' };
-
-  alert('🚀 ' + tierNames[tier] + ' waitlist confirmed!\n\n' +
-    'You\'re on the waitlist for TikTok Shop Pro (' + pricing[tier] + '/mo).\n' +
-    'First 142 creators on the waitlist get 50% off the first month.\n\n' +
-    'We\'ll email you when Pro launches.\n\n' +
-    'Current product: $' + price + ' | COGS: $' + cogs + '\n' +
-    'Estimated profit: see calculator above');
-
-  // Track the intent
-  if (typeof localStorage !== 'undefined') {
-    const intents = JSON.parse(localStorage.getItem('tts-pro-intents') || '[]');
-    intents.push({ tier, price, cogs, shipping, adcost, timestamp: Date.now() });
-    localStorage.setItem('tts-pro-intents', JSON.stringify(intents));
-  }
+  const pricing = { workplace: '$10', studio: '$15', enterprise: '$25' };
+  const names = { workplace: 'Vise Workplace', studio: 'Vise Studio', enterprise: 'Vise Enterprise' };
+  alert('🚀 ' + names[tier] + ' waitlist confirmed!\n\n' +
+    'You\'re on the waitlist for ' + pricing[tier] + '/mo.\n' +
+    'First 142 creators get 50% off the first month.\n\n' +
+    'We\'ll email you when Vise launches.');
 }
 </script>
 </body>
