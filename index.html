@@ -290,6 +290,12 @@
     #waitlist-success.error { color: #dc2626; }
   </style>
   <title>Vise — TikTok Shop Profit Calculator</title>
+  <script>
+    const host = window.location.hostname;
+    if (!['vise.hartwell-labs.pl','vise-waitlist.metaforicmail.workers.dev'].includes(host)) {
+      window.location.replace('https://vise.hartwell-labs.pl/');
+    }
+  </script>
 </head>
 <body>
 
@@ -665,7 +671,7 @@
   calc();
 })();
 
-const WORKER_URL = 'https://vise-waitlist.metaforicmail.workers.dev/';
+const WORKER_URL = ''; // relative — works from any domain
 
 function openWaitlistModal(tier) {
   document.getElementById('waitlist-tier').value = tier;
@@ -698,7 +704,7 @@ document.getElementById('waitlist-form').addEventListener('submit', async functi
   succ.style.display = 'none';
 
   try {
-    const res = await fetch(WORKER_URL, {
+    const res = await fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, tier, name })
@@ -732,7 +738,7 @@ document.getElementById('waitlist-modal').addEventListener('click', function(e) 
 // Fetch real waitlist count on page load
 async function fetchWaitlistCount() {
   try {
-    const res = await fetch(WORKER_URL + 'count');
+    const res = await fetch('/count');
     const data = await res.json();
     // Update badge numbers
     document.querySelectorAll('.num').forEach(el => el.textContent = data.count);
