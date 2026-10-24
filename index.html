@@ -9,16 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #ffffff; --bg-subtle: #f8fafc; --border: #e2e8f0;
-      --txt: #0f172a; --txt-2: #64748b; --txt-3: #94a3b8;
-      --accent: #4f46e5; --accent-hover: #4338ca; --accent-soft: #eef2ff;
-      --green: #059669; --green-soft: #ecfdf5;
+      --bg: #0a0e14; --bg-subtle: #11161e; --border: #1e2632;
+      --txt: #f1f5f9; --txt-2: #94a3b8; --txt-3: #64748b;
+      --accent: #4f46e5; --accent-hover: #4338ca; --accent-soft: #1e203a;
+      --green: #059669; --green-soft: #06342e;
       --red: #dc2626; --amber: #d97706;
     }
-    @media (prefers-color-scheme: dark) {
+    @media (prefers-color-scheme: light) {
       :root {
-        --bg: #0a0e14; --bg-subtle: #11161e; --border: #1e2632;
-        --txt: #f1f5f9; --txt-2: #94a3b8; --txt-3: #64748b;
+        --bg: #f8fafc; --bg-subtle: #f1f5f9; --border: #e2e8f0;
+        --txt: #0f172a; --txt-2: #64748b; --txt-3: #94a3b8;
       }
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,11 +36,10 @@
     /* ===== HEADER ===== */
     header {
       position: sticky; top: 0; z-index: 50;
-      background: rgba(255, 255, 255, .88);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
     }
-    @media (prefers-color-scheme: dark) { header { background: rgba(10, 14, 20, .88); } }
+    @media (prefers-color-scheme: light) { header { background: rgba(255, 255, 255, .88); } }
     .header-in { display: flex; justify-content: space-between; align-items: center; height: 64px; }
     .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
     .logo svg path, .logo svg polyline { stroke: var(--accent); }
@@ -73,10 +72,7 @@
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 36px;
-      box-shadow: 0 1px 3px rgba(0,0,0,.04);
-    }
-    @media (prefers-color-scheme: dark) {
-      .calculator-card { box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+      box-shadow: 0 1px 3px rgba(0,0,0,.3);
     }
     .calculator-card h2 { font-size: 17px; font-weight: 600; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
     .calculator-card h2 .icon { font-size: 14px; opacity: .6; }
@@ -112,20 +108,20 @@
       text-align: center; margin: 34px 0;
       padding: 32px 20px;
       border-radius: 16px;
-      background: linear-gradient(135deg, var(--green-soft) 0%, #dcfce7 100%);
-      border: 1px solid #d1fae5;
+      background: linear-gradient(135deg, #06342e 0%, #0a4f43 100%);
+      border: 1px solid #0a4f43;
       position: relative;
       overflow: hidden;
     }
-    @media (prefers-color-scheme: dark) {
+    @media (prefers-color-scheme: light) {
       .profit-display {
-        background: linear-gradient(135deg, #06342e 0%, #0a4f43 100%);
-        border-color: #0a4f43;
+        background: linear-gradient(135deg, var(--green-soft) 0%, #dcfce7 100%);
+        border-color: #d1fae5;
       }
     }
     .profit-display::before {
       content: ""; position: absolute; inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.3) 0%, transparent 60%);
+      background: radial-gradient(circle at 50% 50%, rgba(5,150,105,.25) 0%, transparent 60%);
       opacity: 0; transition: opacity .6s ease;
       pointer-events: none;
     }
@@ -200,10 +196,7 @@
       padding: 28px; transition: all .25s ease;
       display: flex; flex-direction: column;
     }
-    .tier:hover { transform: translateY(-4px); border-color: var(--accent); }
-    @media (prefers-color-scheme: dark) {
-      .tier:hover { box-shadow: 0 12px 40px rgba(79,70,229,.12); }
-    }
+    .tier:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 40px rgba(79,70,229,.12); }
     .tier .tag {
       display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
       letter-spacing: .1em; padding: 4px 10px; border-radius: 999px;
